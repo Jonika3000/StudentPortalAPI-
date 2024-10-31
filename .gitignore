@@ -6,5 +6,11 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
+/tools/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
