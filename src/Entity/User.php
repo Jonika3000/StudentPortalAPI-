@@ -6,7 +6,6 @@ use App\Enums\Gender;
 use App\Repository\UserRepository;
 use App\Traits\HydrateStaticTrait;
 use App\Validator\Constraint\PhoneNumber;
-use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -50,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull]
-    #[Assert\Type(DateTime::class)]
+    #[Assert\Type(\DateTime::class)]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255)]
