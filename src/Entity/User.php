@@ -4,22 +4,27 @@ namespace App\Entity;
 
 use App\Enums\Gender;
 use App\Repository\UserRepository;
+use App\Traits\HydrateStaticTrait;
+use App\Validator\Constraint\PhoneNumber;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use HydrateStaticTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotNull]
     private ?string $uuid = null;
 
     /**
@@ -35,27 +40,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $secondName = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotNull]
+    #[Assert\Date]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255)]
     private ?string $avatarPath = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $address = null;
 
     #[ORM\Column(length: 255)]
+    #[PhoneNumber]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(enumType: Gender::class)]
+    #[Assert\NotBlank]
     private ?Gender $gender = null;
 
     public function getId(): ?int
@@ -87,6 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     *
      * @return list<string>
      */
     public function getRoles(): array
