@@ -4,16 +4,14 @@ namespace App\Traits;
 
 trait HydrateStaticTrait
 {
-    public static function hydrate(array $values): self
+    public function hydrate(array $values): self
     {
-        $element = new self();
-
         foreach ($values as $key => $value) {
-            if (property_exists($element, $key)) {
-                $element->{$key} = $value;
+            if (property_exists($this, $key) && null === $this->{$key}) {
+                $this->{$key} = $value;
             }
         }
 
-        return $element;
+        return $this;
     }
 }
