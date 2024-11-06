@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
+use App\Constants\UserRoles;
 use App\Enums\Gender;
 use App\Repository\UserRepository;
-use App\Traits\HydrateStaticTrait;
 use App\Validator\Constraint\PhoneNumber;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -17,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use HydrateStaticTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -49,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull]
-    #[Assert\Type(\DateTime::class)]
+    #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255)]
@@ -70,6 +70,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(enumType: Gender::class)]
     #[Assert\NotBlank]
     private ?Gender $gender = null;
+
+    public function __construct()
+    {
+        $this->setUuid(Uuid::v4());
+        $this->setRoles([UserRoles::USER]);
+    }
 
     public function getId(): ?int
     {
