@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Params\RegisterParams;
 use App\Repository\UserRepository;
 use App\Utils\FileHelper;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class UserService
@@ -19,14 +20,14 @@ readonly class UserService
     }
 
     public function postAction(
-        RegisterParams $params, ?array $files = null): User
+        RegisterParams $params, ?FileBag $files = null): User
     {
         $user = new User();
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
             $params->password
         );
-        //        $this->fileHelper->uploadAvatar();
+        $this->fileHelper->uploadAvatar($files->get('avatar'));
         $user->setPassword($hashedPassword);
         $user->setBirthday($params->birthday);
         $user->setEmail($params->email);

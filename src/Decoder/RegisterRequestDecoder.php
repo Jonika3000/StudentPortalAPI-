@@ -19,7 +19,6 @@ class RegisterRequestDecoder
             $request->phoneNumber,
             $request->gender,
             $request->birthday,
-            $request->avatar
         );
     }
 }

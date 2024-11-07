@@ -21,8 +21,9 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'register', methods: 'POST')]
     public function index(RegisterRequest $request): JsonResponse
     {
+        $files = $request->getFiles();
         $params = $this->registerRequestDecoder->decode($request);
-        $this->userService->postAction($params);
+        $this->userService->postAction($params, $files);
 
         return $this->json(['message' => 'Registered Successfully']);
     }

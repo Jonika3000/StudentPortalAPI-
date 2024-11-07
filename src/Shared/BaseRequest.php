@@ -12,6 +12,9 @@ use Webmozart\Assert\Assert;
 
 abstract class BaseRequest
 {
+    /**
+     * @throws ValidatorException
+     */
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly SerializerInterface $serializer,
@@ -21,7 +24,10 @@ abstract class BaseRequest
         $this->validate();
     }
 
-    public function validate()
+    /**
+     * @throws ValidatorException
+     */
+    public function validate(): void
     {
         $errors = $this->validator->validate($this);
         $messages = [];
@@ -47,12 +53,16 @@ abstract class BaseRequest
     {
         $request = $this->requestStack->getCurrentRequest();
         Assert::notNull($request);
-
         $this->serializer->deserialize(
-            $request->getContent(),
+            $request->request->all()['data'],
             static::class,
             'json',
             ['object_to_populate' => $this]
         );
+    }
+
+    public function getFiles(): \Symfony\Component\HttpFoundation\FileBag
+    {
+        return $this->requestStack->getCurrentRequest()->files;
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Params;
 
 use App\Enums\Gender;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class RegisterParams extends AbstractParams
 {
@@ -16,7 +15,6 @@ class RegisterParams extends AbstractParams
         public readonly string $phoneNumber,
         public readonly Gender $gender,
         public readonly \DateTimeInterface $birthday,
-        public readonly ?UploadedFile $avatar = null,
     ) {
     }
 }

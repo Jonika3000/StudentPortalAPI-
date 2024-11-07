@@ -18,7 +18,6 @@ class FileHelper
         $extension = $uploadedFile->guessExtension();
 
         $newFilename = $originalFilename.'-'.uniqid().'.'.$extension;
-        $uploadedFile->move($this->uploadDir.'/avatars/', $newFilename);
 
         foreach (self::AVATAR_SIZES as $size) {
             $resizedFilename = $originalFilename.'-'.$size.'x'.$size.'.'.$extension;
@@ -26,6 +25,7 @@ class FileHelper
 
             ImageResize::image_resize($size, $size, $resizedPath, $uploadedFile);
         }
+        $uploadedFile->move($this->uploadDir.'/avatars/', $newFilename);
 
         return $newFilename;
     }
