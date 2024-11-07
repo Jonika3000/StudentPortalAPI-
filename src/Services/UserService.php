@@ -2,14 +2,12 @@
 
 namespace App\Services;
 
-use App\Constants\UserRoles;
 use App\Entity\User;
-use App\Enums\Gender;
+use App\Params\FilesParams\RegisterFilesParams;
+use App\Params\RegisterParams;
 use App\Repository\UserRepository;
-use App\Utils\Converter;
 use App\Utils\FileHelper;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Uid\Uuid;
 
 readonly class UserService
 {
@@ -21,21 +19,25 @@ readonly class UserService
     {
     }
 
-    public function createNewUser(
-        array $data, ?array $files = null): User
+    public function postAction(
+        RegisterParams $params, ?RegisterFilesParams $files = null): User
     {
         $user = new User();
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
-            $data['password']
+            $params->password
         );
-        $this->fileHelper->uploadAvatar();
-        $user->setUuid(Uuid::v4());
+        $avatarPath = $this->fileHelper->uploadImage($files->avatar, true);
+        $user->setAvatarPath($avatarPath);
         $user->setPassword($hashedPassword);
-        $user->setRoles([UserRoles::USER]);
-        $user->setGender(Gender::tryFrom($data['gender']));
-        $user->setBirthday(Converter::convertToDateTime($data['birthday']));
-        $user->hydrate($data);
+        $user->setBirthday($params->birthday);
+        $user->setEmail($params->email);
+        $user->setFirstName($params->firstName);
+        $user->setGender($params->gender);
+        $user->setPhoneNumber($params->phoneNumber);
+        $user->setAddress($params->address);
+        $user->setSecondName($params->secondName);
+
         $this->validatorService->validateObject($user);
 
         $this->userRepository->saveUser($user);
