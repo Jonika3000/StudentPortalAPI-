@@ -12,21 +12,25 @@ class FileHelper
     {
     }
 
-    public function uploadAvatar(UploadedFile $uploadedFile): string
+    public function uploadImage(UploadedFile $uploadedFile, bool $resizeImages): string
     {
         $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $uploadedFile->guessExtension();
-
+        $systemDir = $this->uploadDir.'/avatars/';
         $newFilename = $originalFilename.'-'.uniqid().'.'.$extension;
 
-        foreach (self::AVATAR_SIZES as $size) {
-            $resizedFilename = $originalFilename.'-'.$size.'x'.$size.'.'.$extension;
-            $resizedPath = $this->uploadDir.'/avatars/'.$resizedFilename;
+        if ($resizeImages) {
+            foreach (self::AVATAR_SIZES as $size) {
+                $resizedFilename = $originalFilename.'-'.$size.'x'.$size.'.'.$extension;
+                $resizedPath = $systemDir.$resizedFilename;
 
-            ImageResize::image_resize($size, $size, $resizedPath, $uploadedFile);
+                ImageResize::image_resize($size, $size, $resizedPath, $uploadedFile);
+            }
         }
-        $uploadedFile->move($this->uploadDir.'/avatars/', $newFilename);
 
-        return $newFilename;
+        $fullPath = 'uploads/avatars/'.$newFilename;
+        $uploadedFile->move($systemDir, $newFilename);
+
+        return $fullPath;
     }
 }

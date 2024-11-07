@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Decoder\FileBagDecoder\RegisterFileBagDecoder;
 use App\Decoder\RegisterRequestDecoder;
 use App\Request\RegisterRequest;
 use App\Services\UserService;
@@ -15,13 +16,14 @@ class RegistrationController extends AbstractController
     public function __construct(
         private readonly UserService $userService,
         private readonly RegisterRequestDecoder $registerRequestDecoder,
+        private readonly RegisterFileBagDecoder $registerFileBagDecoder,
     ) {
     }
 
     #[Route('/register', name: 'register', methods: 'POST')]
     public function index(RegisterRequest $request): JsonResponse
     {
-        $files = $request->getFiles();
+        $files = $this->registerFileBagDecoder->decode($request->getFiles());
         $params = $this->registerRequestDecoder->decode($request);
         $this->userService->postAction($params, $files);
 

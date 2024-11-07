@@ -52,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $birthday = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatarPath = null;
 
     #[ORM\Column(length: 255)]
