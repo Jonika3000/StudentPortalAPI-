@@ -17,19 +17,19 @@ class FileHelper
         $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $uploadedFile->guessExtension();
         $systemDir = $this->uploadDir.'/avatars/';
-        $newFilename = $originalFilename.'-'.uniqid().'.'.$extension;
+        $newFilename = $originalFilename.'-'.uniqid();
 
         if ($resizeImages) {
             foreach (self::AVATAR_SIZES as $size) {
-                $resizedFilename = $originalFilename.'-'.$size.'x'.$size.'.'.$extension;
+                $resizedFilename = $newFilename.'-'.$size.'x'.$size.'.'.$extension;
                 $resizedPath = $systemDir.$resizedFilename;
 
                 ImageResize::image_resize($size, $size, $resizedPath, $uploadedFile);
             }
         }
 
-        $fullPath = 'uploads/avatars/'.$newFilename;
-        $uploadedFile->move($systemDir, $newFilename);
+        $fullPath = 'uploads/avatars/'.$newFilename.$extension;
+        $uploadedFile->move($systemDir, $newFilename.'.'.$extension);
 
         return $fullPath;
     }

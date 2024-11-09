@@ -53,6 +53,7 @@ abstract class BaseRequest
     {
         $request = $this->requestStack->getCurrentRequest();
         Assert::notNull($request);
+
         $this->serializer->deserialize(
             $request->request->all()['data'],
             static::class,
