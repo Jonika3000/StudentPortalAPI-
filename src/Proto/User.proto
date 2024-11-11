@@ -1,0 +1,28 @@
+syntax="proto3";
+
+enum UserRoles {
+    USER_ROLES_ROLE_ADMIN = 0;
+    USER_ROLES_ROLE_USER = 1;
+    USER_ROLES_ROLE_MANAGER =2;
+}
+
+enum Gender {
+    GENDER_MALE = 0;
+    GENDER_FEMALE = 1;
+    GENDER_NON_BINARY = 2;
+}
+
+message User {
+    optional int32 id = 1;
+    optional string uuid = 2;
+    repeated UserRoles roles = 3;
+    string password = 4;
+    string firstName = 5;
+    string secondName =6;
+    string birthday = 7;
+    optional string avatarPath = 8;
+    string email = 9;
+    string address = 10;
+    string phoneNumber = 11;
+    Gender gender = 12;
+}
