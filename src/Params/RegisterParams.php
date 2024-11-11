@@ -4,7 +4,7 @@ namespace App\Params;
 
 use App\Enums\Gender;
 
-class RegisterParams extends AbstractParams
+class RegisterParams
 {
     public function __construct(
         public readonly string $email,
