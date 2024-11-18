@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Teacher;
+use App\Entity\SonataUserUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Teacher>
+ * @extends ServiceEntityRepository<SonataUserUser>
  */
-class TeacherRepository extends ServiceEntityRepository
+class SonataUserUserRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Teacher::class);
+        parent::__construct($registry, SonataUserUser::class);
     }
 
     //    /**
-    //     * @return Teacher[] Returns an array of Teacher objects
+    //     * @return SonataUserUser[] Returns an array of SonataUserUser objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
+    //            ->orderBy('s.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Teacher
+    //    public function findOneBySomeField($value): ?SonataUserUser
     //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

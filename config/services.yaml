@@ -16,3 +16,7 @@ services:
     App\Utils\FileHelper:
         arguments:
             $uploadDir: '%upload_directory%'
+    admin.student:
+        class: App\Admin\StudentAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Student, manager_type: orm, label: Student }
