@@ -3,6 +3,7 @@
 namespace App\Admin;
 
 use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\ModelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,5 +19,12 @@ final class StudentAdmin extends AbstractAdmin
             ->with('Student data', ['class' => 'col-md-6'])
             ->add('contactParent', TextType::class)
             ->end();
+    }
+
+    protected function configureListFields(ListMapper $list): void
+    {
+        $list
+            ->add('associatedUser.email')
+        ;
     }
 }
