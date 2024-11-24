@@ -27,7 +27,7 @@ readonly class UserService
             $user,
             $params->password
         );
-        $avatarPath = $this->fileHelper->uploadImage($files->avatar, true);
+        $avatarPath = $this->fileHelper->uploadImage($files->avatar,'/avatars/', true);
         $user->setAvatarPath($avatarPath);
         $user->setPassword($hashedPassword);
         $user->setBirthday($params->birthday);

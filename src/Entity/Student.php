@@ -21,7 +21,7 @@ class Student
     private ?string $contactParent = null;
 
     #[ORM\ManyToOne(inversedBy: 'students')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Classroom $classRoom = null;
 
     public function getId(): ?int
@@ -63,5 +63,10 @@ class Student
         $this->classRoom = $classRoom;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return (string)$this->getId();
     }
 }

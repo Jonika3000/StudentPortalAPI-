@@ -12,11 +12,11 @@ class FileHelper
     {
     }
 
-    public function uploadImage(UploadedFile $uploadedFile, bool $resizeImages): string
+    public function uploadImage(UploadedFile $uploadedFile, string $path, bool $resizeImages): string
     {
         $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $uploadedFile->guessExtension();
-        $systemDir = $this->uploadDir.'/avatars/';
+        $systemDir = $this->uploadDir.$path;
         $newFilename = $originalFilename.'-'.uniqid();
 
         if ($resizeImages) {
@@ -28,7 +28,7 @@ class FileHelper
             }
         }
 
-        $fullPath = 'uploads/avatars/'.$newFilename.$extension;
+        $fullPath = 'uploads/images'.$path.$newFilename.'.'.$extension;
         $uploadedFile->move($systemDir, $newFilename.'.'.$extension);
 
         return $fullPath;
