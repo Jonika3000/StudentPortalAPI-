@@ -39,6 +39,7 @@ final class SubjectAdmin extends AbstractAdmin
             ->add('description')
             ->add('imagePath', null, [
                 'template' => 'admin/image_preview.html.twig',
+                'label' => 'Image',
             ]);
     }
 

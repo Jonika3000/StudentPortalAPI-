@@ -24,7 +24,18 @@ final class StudentAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('associatedUser.email')
+            ->add('associatedUser.email', null, [
+                'label' => 'Email',
+            ])
+            ->add('associatedUser.firstName', null, [
+                'label' => 'First name',
+            ])
+            ->add('associatedUser.secondName', null, [
+                'label' => 'Second name',
+            ])
+            ->add('associatedUser.birthday', null, [
+                'label' => 'Birthday',
+            ])
         ;
     }
 }
