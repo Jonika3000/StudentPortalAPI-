@@ -3,7 +3,6 @@
 namespace App\Admin;
 
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -24,6 +23,11 @@ class TeacherAdmin extends AbstractAdmin
                 'query' => $this->userRepository->getFilteredUsersQuery(),
                 'required' => false,
                 'label' => 'Associated User',
+            ])
+            ->add('lesson', ModelType::class, [
+                'multiple' => true,
+                'required' => false,
+                'label' => 'Lessons',
             ])
             ->end();
     }

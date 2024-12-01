@@ -28,13 +28,13 @@ class Teacher
     /**
      * @var Collection<int, Lesson>
      */
-    #[ORM\OneToMany(targetEntity: Lesson::class, mappedBy: 'teachers')]
-    private Collection $lessons;
+    #[ORM\ManyToMany(targetEntity: Lesson::class, inversedBy: 'teachers')]
+    private Collection $lesson;
 
     public function __construct()
     {
         $this->homework = new ArrayCollection();
-        $this->lessons = new ArrayCollection();
+        $this->lesson = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,19 +84,23 @@ class Teacher
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->getAssociatedUser()->getEmail();
+    }
+
     /**
      * @return Collection<int, Lesson>
      */
-    public function getLessons(): Collection
+    public function getLesson(): Collection
     {
-        return $this->lessons;
+        return $this->lesson;
     }
 
     public function addLesson(Lesson $lesson): static
     {
-        if (!$this->lessons->contains($lesson)) {
-            $this->lessons->add($lesson);
-            $lesson->setTeachers($this);
+        if (!$this->lesson->contains($lesson)) {
+            $this->lesson->add($lesson);
         }
 
         return $this;
@@ -104,12 +108,7 @@ class Teacher
 
     public function removeLesson(Lesson $lesson): static
     {
-        if ($this->lessons->removeElement($lesson)) {
-            // set the owning side to null (unless already changed)
-            if ($lesson->getTeachers() === $this) {
-                $lesson->setTeachers(null);
-            }
-        }
+        $this->lesson->removeElement($lesson);
 
         return $this;
     }

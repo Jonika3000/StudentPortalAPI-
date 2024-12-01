@@ -15,6 +15,7 @@ final class StudentAdmin extends AbstractAdmin
     {
         parent::__construct();
     }
+
     protected function configureFormFields(FormMapper $form): void
     {
         $form
