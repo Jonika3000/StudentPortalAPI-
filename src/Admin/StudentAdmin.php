@@ -2,16 +2,15 @@
 
 namespace App\Admin;
 
-use App\Repository\UserRepository;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Form\Type\ModelType;
+use Sonata\AdminBundle\Form\Type\AdminType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class StudentAdmin extends AbstractAdmin
 {
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct()
     {
         parent::__construct();
     }
@@ -20,8 +19,7 @@ final class StudentAdmin extends AbstractAdmin
     {
         $form
             ->with('User data', ['class' => 'col-md-6'])
-            ->add('associatedUser', ModelType::class, [
-                'query' => $this->userRepository->getFilteredUsersQuery(),
+            ->add('associatedUser', AdminType::class, [
                 'required' => false,
                 'label' => 'Associated User',
             ])

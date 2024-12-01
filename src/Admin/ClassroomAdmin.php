@@ -39,6 +39,9 @@ class ClassroomAdmin extends AbstractAdmin
         $list
             ->add('uuid', null, [
                 'label' => 'Indicator',
+            ])
+            ->add('createdAt', null, [
+                'label' => 'Created',
             ]);
     }
 }

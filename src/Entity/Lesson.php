@@ -35,7 +35,6 @@ class Lesson
     #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'lesson')]
     private Collection $teachers;
 
-
     public function __construct()
     {
         $this->homework = new ArrayCollection();
@@ -130,6 +129,6 @@ class Lesson
 
     public function __toString(): string
     {
-        return "Lesson"." ".$this->getSubject()->getName();
+        return 'Lesson '.$this->getSubject()->getName();
     }
 }

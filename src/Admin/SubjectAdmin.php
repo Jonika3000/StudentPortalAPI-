@@ -37,10 +37,12 @@ final class SubjectAdmin extends AbstractAdmin
         $list
             ->add('name')
             ->add('description')
-            ->add('imagePath', null, [
-                'template' => 'admin/image_preview.html.twig',
-                'label' => 'Image',
-            ]);
+//            ->add('imagePath', null, [
+//                'template' => 'admin/image_preview.html.twig',
+//                'label' => 'Image',
+//                'path' => $this->getSubject()->getImagePath(),
+//            ])
+        ;
     }
 
     protected function prePersist(object $object): void
