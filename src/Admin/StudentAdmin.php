@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\Repository\UserRepository;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -10,11 +11,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class StudentAdmin extends AbstractAdmin
 {
+    public function __construct(private readonly UserRepository $userRepository)
+    {
+        parent::__construct();
+    }
     protected function configureFormFields(FormMapper $form): void
     {
         $form
             ->with('User data', ['class' => 'col-md-6'])
-            ->add('associatedUser', ModelType::class)
+            ->add('associatedUser', ModelType::class, [
+                'query' => $this->userRepository->getFilteredUsersQuery(),
+                'required' => false,
+                'label' => 'Associated User',
+            ])
             ->end()
             ->with('Student data', ['class' => 'col-md-6'])
             ->add('contactParent', TextType::class)
