@@ -28,3 +28,15 @@ services:
         class: App\Admin\SubjectAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Subject, manager_type: orm, label: Subject }
+    admin.teacher:
+        class: App\Admin\TeacherAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Teacher, manager_type: orm, label: Teacher }
+    admin.classroom:
+        class: App\Admin\ClassroomAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Classroom, manager_type: orm, label: Classroom }
+    admin.lessons:
+        class: App\Admin\LessonAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Lesson, manager_type: orm, label: Lesson }

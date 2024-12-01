@@ -5,7 +5,6 @@ namespace App\Admin;
 use App\Enums\Gender;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Form\FormMapper;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
@@ -25,10 +24,9 @@ final class UserAdmin extends AbstractAdmin
             ->add('address', TextType::class)
             ->add('gender', EnumType::class, [
                 'class' => Gender::class,
-                'label' => 'gender',
+                'label' => 'Gender',
                 'attr' => ['data-sonata-select2' => 'true'],
             ])
-            // ->add('gender', ChoiceType::class, ['choices' => Gender::getLabel()])
         ;
     }
 }

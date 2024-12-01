@@ -39,6 +39,8 @@ class Classroom
     {
         $this->students = new ArrayCollection();
         $this->lessons = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->uuid = Uuid::v4();
     }
 
     public function getId(): ?int
@@ -128,5 +130,10 @@ class Classroom
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->getUuid();
     }
 }

@@ -29,13 +29,16 @@ class Lesson
     #[ORM\OneToMany(targetEntity: Homework::class, mappedBy: 'lesson')]
     private Collection $homework;
 
-    #[ORM\ManyToOne(inversedBy: 'lessons')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Teacher $teachers = null;
+    /**
+     * @var Collection<int, Teacher>
+     */
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'lesson')]
+    private Collection $teachers;
 
     public function __construct()
     {
         $this->homework = new ArrayCollection();
+        $this->teachers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,15 +100,35 @@ class Lesson
         return $this;
     }
 
-    public function getTeachers(): ?Teacher
+    /**
+     * @return Collection<int, Teacher>
+     */
+    public function getTeachers(): Collection
     {
         return $this->teachers;
     }
 
-    public function setTeachers(?Teacher $teachers): static
+    public function addTeacher(Teacher $teacher): static
     {
-        $this->teachers = $teachers;
+        if (!$this->teachers->contains($teacher)) {
+            $this->teachers->add($teacher);
+            $teacher->addLesson($this);
+        }
 
         return $this;
+    }
+
+    public function removeTeacher(Teacher $teacher): static
+    {
+        if ($this->teachers->removeElement($teacher)) {
+            $teacher->removeLesson($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return 'Lesson '.$this->getSubject()->getName();
     }
 }

@@ -1,8 +1,8 @@
 {% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
 
 {% block field %}
-    {% if object.imagePath %}
-        <img class="img-responsive" alt="{{ object.name }}" src="{{ asset(object.imagePath) }}" style="max-width: 100px; max-height: 100px;" />
+    {% if field_description.options.path %}
+        <img class="img-responsive" alt="image" src="{{ asset(field_description.options.path) }}" style="max-width: 100px; max-height: 100px;" />
     {% else %}
         <span>No image</span>
     {% endif %}

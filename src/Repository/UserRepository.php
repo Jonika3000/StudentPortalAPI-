@@ -39,4 +39,28 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $entityManager->persist($user);
         $entityManager->flush();
     }
+
+    public function getFilteredUsersQuery(): \Doctrine\ORM\QueryBuilder
+    {
+        $entityManager = $this->getEntityManager();
+        $subqueryStudent = $entityManager->createQueryBuilder()
+            ->select('IDENTITY(s.associatedUser)')
+            ->from('App\Entity\Student', 's');
+
+        $subqueryTeacher = $entityManager->createQueryBuilder()
+            ->select('IDENTITY(t.associatedUser)')
+            ->from('App\Entity\Teacher', 't');
+
+        $qb = $entityManager->createQueryBuilder();
+        $qb->select('u')
+            ->from('App\Entity\User', 'u')
+            ->where(
+                $qb->expr()->notIn('u.id', $subqueryStudent->getDQL())
+            )
+            ->andWhere(
+                $qb->expr()->notIn('u.id', $subqueryTeacher->getDQL())
+            );
+
+        return $qb;
+    }
 }
