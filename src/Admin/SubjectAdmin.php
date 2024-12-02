@@ -7,6 +7,7 @@ use App\Utils\FileHelper;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -32,16 +33,44 @@ final class SubjectAdmin extends AbstractAdmin
             ]);
     }
 
+    public function configureShowFields(ShowMapper $show): void
+    {
+        $show
+            ->with('Subject Details', ['class' => 'col-md-6'])
+            ->add('id', null, [
+                'label' => 'ID',
+            ])
+            ->add('name', null, [
+                'label' => 'Name',
+            ])
+            ->add('description', null, [
+                'label' => 'Description',
+            ])
+            ->add('imagePath', null, [
+                'template' => 'admin/image_preview.html.twig',
+                'label' => 'Image',
+                'path' => $this->getSubjectImagePath(),
+            ])
+            ->end()
+            ->with('Lessons Associated', ['class' => 'col-md-6'])
+            ->add('lessons', null, [
+                'label' => 'Lessons',
+                'associated_property' => 'name',
+            ])
+            ->end();
+    }
+
     protected function configureListFields(ListMapper $list): void
     {
         $list
             ->add('name')
             ->add('description')
-//            ->add('imagePath', null, [
-//                'template' => 'admin/image_preview.html.twig',
-//                'label' => 'Image',
-//                'path' => $this->getSubject()->getImagePath(),
-//            ])
+            ->add('_action', 'actions', [
+                'actions' => [
+                    'show' => [],
+                    'edit' => [],
+                ],
+            ])
         ;
     }
 
@@ -64,5 +93,10 @@ final class SubjectAdmin extends AbstractAdmin
             $path = $this->fileHelper->uploadImage($file, '/subject/', false);
             $subject->setImagePath($path);
         }
+    }
+
+    private function getSubjectImagePath()
+    {
+        return $this->getSubject()->getImagePath();
     }
 }
