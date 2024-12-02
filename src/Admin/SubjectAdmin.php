@@ -70,8 +70,7 @@ final class SubjectAdmin extends AbstractAdmin
                     'show' => [],
                     'edit' => [],
                 ],
-            ])
-        ;
+            ]);
     }
 
     protected function prePersist(object $object): void
