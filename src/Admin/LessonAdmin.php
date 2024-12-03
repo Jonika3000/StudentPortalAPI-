@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\ModelType;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class LessonAdmin extends AbstractAdmin
 {
@@ -33,6 +34,40 @@ class LessonAdmin extends AbstractAdmin
     {
         $listMapper
             ->add('subject.name', null, ['label' => 'Subject'])
-            ->add('classroom.uuid', null, ['label' => 'Classroom']);
+            ->add('classroom.uuid', null, ['label' => 'Classroom'])
+            ->add('_action', 'actions', [
+                'actions' => [
+                    'show' => [],
+                    'edit' => [],
+                ],
+            ]);
+    }
+
+    public function configureShowFields(ShowMapper $show): void
+    {
+        $show
+            ->with('Lesson Details', ['class' => 'col-md-6'])
+            ->add('id', null, [
+                'label' => 'ID',
+            ])
+            ->add('subject', null, [
+                'label' => 'Subject',
+            ])
+            ->add('classroom', null, [
+                'label' => 'Classroom',
+            ])
+            ->end()
+            ->with('Associated Homework', ['class' => 'col-md-6'])
+            ->add('homework', null, [
+                'label' => 'Homework',
+                'associated_property' => 'description',
+            ])
+            ->end()
+            ->with('Assigned Teachers', ['class' => 'col-md-6'])
+            ->add('teachers', null, [
+                'label' => 'Teachers',
+                'associated_property' => 'associatedUser.secondName',
+            ])
+            ->end();
     }
 }
