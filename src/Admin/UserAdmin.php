@@ -8,6 +8,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class UserAdmin extends AbstractAdmin
@@ -26,6 +27,11 @@ final class UserAdmin extends AbstractAdmin
                 'class' => Gender::class,
                 'label' => 'Gender',
                 'attr' => ['data-sonata-select2' => 'true'],
+            ])
+            ->add('avatarPath', FileType::class, [
+                'required' => false,
+                'label' => 'Avatar',
+                'mapped' => false,
             ])
         ;
     }

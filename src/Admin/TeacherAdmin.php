@@ -2,18 +2,24 @@
 
 namespace App\Admin;
 
+use App\Entity\Teacher;
+use App\Utils\FileHelper;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\AdminType;
 use Sonata\AdminBundle\Form\Type\ModelType;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class TeacherAdmin extends AbstractAdmin
 {
-    public function __construct()
+    private FileHelper $fileHelper;
+
+    public function __construct(FileHelper $fileHelper)
     {
         parent::__construct();
+        $this->fileHelper = $fileHelper;
     }
 
     public function configureFormFields(FormMapper $form): void
@@ -104,6 +110,27 @@ class TeacherAdmin extends AbstractAdmin
                 'associated_property' => 'name',
             ])
             ->end();
+    }
+
+    protected function prePersist(object $object): void
+    {
+        $this->manageFileUpload($object);
+    }
+
+    protected function preUpdate(object $object): void
+    {
+        $this->manageFileUpload($object);
+    }
+
+    private function manageFileUpload(Teacher $teacher): void
+    {
+        /** @var UploadedFile|null $file */
+        $file = $this->getForm()->get('associatedUser')->get('avatarPath')->getData();
+
+        if ($file instanceof UploadedFile) {
+            $path = $this->fileHelper->uploadImage($file, '/avatars/', true);
+            $teacher->getAssociatedUser()->setAvatarPath($path);
+        }
     }
 
     public function getSubjectAssociatedUserAvatarPath(): ?string

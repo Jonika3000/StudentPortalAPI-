@@ -2,7 +2,9 @@
 
 {% block field %}
     {% if field_description.options.path %}
-        <img class="img-responsive" alt="image" src="{{ asset(field_description.options.path) }}" style="max-width: 100px; max-height: 100px;" />
+        <a href="{{ asset(field_description.options.path) }}" target="_blank">
+            <img class="img-responsive" alt="image" src="{{ asset(field_description.options.path) }}" style="max-width: 100px; max-height: 100px;" />
+        </a>
     {% else %}
         <span>No image</span>
     {% endif %}
