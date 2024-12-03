@@ -2,20 +2,25 @@
 
 namespace App\Admin;
 
+use App\Entity\Student;
+use App\Utils\FileHelper;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\AdminType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class StudentAdmin extends AbstractAdmin
 {
-    public function __construct()
+    private FileHelper $fileHelper;
+
+    public function __construct(FileHelper $fileHelper)
     {
         parent::__construct();
+        $this->fileHelper = $fileHelper;
     }
-
     protected function configureFormFields(FormMapper $form): void
     {
         $form
@@ -97,6 +102,27 @@ final class StudentAdmin extends AbstractAdmin
                 'associated_property' => 'uuid',
             ])
             ->end();
+    }
+
+    protected function prePersist(object $object): void
+    {
+        $this->manageFileUpload($object);
+    }
+
+    protected function preUpdate(object $object): void
+    {
+        $this->manageFileUpload($object);
+    }
+
+    private function manageFileUpload(Student $student): void
+    {
+        /** @var UploadedFile|null $file */
+        $file = $this->getForm()->get('associatedUser')->get('avatarPath')->getData();
+
+        if ($file instanceof UploadedFile) {
+            $path = $this->fileHelper->uploadImage($file, '/avatars/', true);
+            $student->getAssociatedUser()->setAvatarPath($path);
+        }
     }
 
     public function getSubjectAssociatedUserAvatarPath(): ?string
