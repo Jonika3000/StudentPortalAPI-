@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\HomeworkFileRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HomeworkFileRepository::class)]
 class HomeworkFile
@@ -14,9 +15,13 @@ class HomeworkFile
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private ?string $path = null;
 
     #[ORM\ManyToOne(inversedBy: 'homeworkFiles')]
