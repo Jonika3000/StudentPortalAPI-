@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StudentSubmissionRepository::class)]
 class StudentSubmission
@@ -17,17 +18,25 @@ class StudentSubmission
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'Submitted date cannot be null.')]
+    #[Assert\Type(type: \DateTimeInterface::class, message: 'Submitted date must be a valid datetime.')]
     private ?\DateTimeInterface $submittedDate = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Comment cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $comment = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Student must be assigned.')]
     private ?Student $student = null;
 
     #[ORM\ManyToOne(inversedBy: 'studentSubmissions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Homework must be assigned.')]
     private ?Homework $homework = null;
 
     /**
@@ -37,6 +46,7 @@ class StudentSubmission
     private Collection $studentSubmissionFiles;
 
     #[ORM\OneToOne(mappedBy: 'studentSubmission', cascade: ['persist', 'remove'])]
+    #[Assert\NotNull(message: 'Grade must be assigned.')]
     private ?Grade $grade = null;
 
     public function __construct()

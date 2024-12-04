@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HomeworkRepository::class)]
 class Homework
@@ -18,9 +19,12 @@ class Homework
 
     #[ORM\ManyToOne(inversedBy: 'homework')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Teacher $teacher = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'homework')]
@@ -28,6 +32,7 @@ class Homework
     private ?Lesson $lesson = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\Type(type: \DateTimeInterface::class)]
     private ?\DateTimeInterface $deadline = null;
 
     /**

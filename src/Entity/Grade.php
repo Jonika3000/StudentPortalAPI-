@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\GradeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GradeRepository::class)]
 class Grade
@@ -14,17 +15,24 @@ class Grade
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Grade cannot be null.')]
     private ?int $grade = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Teacher cannot be null.')]
     private ?Teacher $teacher = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Comment cannot be longer than {{ limit }} characters.'
+    )]
     private ?string $comment = null;
 
     #[ORM\OneToOne(inversedBy: 'grade', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?StudentSubmission $studentSubmission = null;
 
     public function getId(): ?int
