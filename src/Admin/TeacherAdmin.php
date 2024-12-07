@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\Constants\UserRoles;
 use App\Entity\Teacher;
 use App\Utils\FileHelper;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -11,12 +12,13 @@ use Sonata\AdminBundle\Form\Type\AdminType;
 use Sonata\AdminBundle\Form\Type\ModelType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class TeacherAdmin extends AbstractAdmin
 {
     private FileHelper $fileHelper;
 
-    public function __construct(FileHelper $fileHelper)
+    public function __construct(FileHelper $fileHelper, private readonly UserPasswordHasherInterface $passwordHasher)
     {
         parent::__construct();
         $this->fileHelper = $fileHelper;
@@ -115,6 +117,30 @@ class TeacherAdmin extends AbstractAdmin
     protected function prePersist(object $object): void
     {
         $this->manageFileUpload($object);
+        $this->addTeacherRole($object);
+        $this->hashPassword($object);
+    }
+
+    protected function hashPassword(Teacher $teacher): void
+    {
+        $user = $teacher->getAssociatedUser();
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $user->getPassword()
+        );
+
+        $user->setPassword($hashedPassword);
+    }
+
+    private function addTeacherRole(Teacher $teacher): void
+    {
+        $user = $teacher->getAssociatedUser();
+
+        if ($user && !in_array(UserRoles::TEACHER, $user->getRoles(), true)) {
+            $roles = $user->getRoles();
+            $roles[] = UserRoles::TEACHER;
+            $user->setRoles(array_unique($roles));
+        }
     }
 
     protected function preUpdate(object $object): void

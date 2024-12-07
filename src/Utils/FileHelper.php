@@ -8,7 +8,7 @@ class FileHelper
 {
     public const AVATAR_SIZES = [50, 150, 300, 600];
 
-    public function __construct(private string $uploadDir)
+    public function __construct(private readonly string $uploadDir)
     {
     }
 
@@ -32,5 +32,28 @@ class FileHelper
         $uploadedFile->move($systemDir, $newFilename.'.'.$extension);
 
         return $fullPath;
+    }
+
+    public function deleteImage(string $path, bool $resizeImages): void
+    {
+        $fullPath = $this->uploadDir.$path;
+
+        $fileInfo = pathinfo($fullPath);
+        $directory = $fileInfo['dirname'];
+        $filename = $fileInfo['filename'];
+        $extension = $fileInfo['extension'];
+
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+        }
+
+        if ($resizeImages) {
+            foreach (self::AVATAR_SIZES as $size) {
+                $resizedPath = $directory.DIRECTORY_SEPARATOR.$filename.'-'.$size.'x'.$size.'.'.$extension;
+                if (file_exists($resizedPath)) {
+                    unlink($resizedPath);
+                }
+            }
+        }
     }
 }
