@@ -84,4 +84,21 @@ readonly class UserService
 
         return new JsonResponse(['message' => 'If the email exists, a reset link will be sent.'], 200);
     }
+
+    public function passwordReset(
+        $resetToken,
+        $newPassword,
+    ): JsonResponse {
+        $user = $this->userRepository->findOneBy(['resetToken' => $resetToken]);
+        if (!$user || $user->getResetTokenExpiry() < new \DateTime()) {
+            return new JsonResponse(['message' => 'Invalid or expired reset token.'], 400);
+        }
+
+        $user->setPassword($this->passwordHasher->hashPassword($user, $newPassword));
+        $user->setResetToken(null);
+        $user->setResetTokenExpiry(null);
+        $this->userRepository->saveUser($user);
+
+        return new JsonResponse(['message' => 'Password successfully reset.'], 200);
+    }
 }

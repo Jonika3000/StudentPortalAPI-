@@ -10,7 +10,8 @@ class PasswordResetDecoder
     public function decode(PasswordResetRequest $request): PasswordResetParams
     {
         return new PasswordResetParams(
-            $request->email
+            $request->resetToken,
+            $request->newPassword
         );
     }
 }

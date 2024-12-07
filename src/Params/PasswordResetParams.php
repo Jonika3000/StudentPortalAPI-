@@ -5,7 +5,8 @@ namespace App\Params;
 class PasswordResetParams
 {
     public function __construct(
-        public string $email,
+        public string $resetToken,
+        public string $newPassword,
     ) {
     }
 }

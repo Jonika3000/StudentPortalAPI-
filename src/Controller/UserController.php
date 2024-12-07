@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Decoder\PasswordResetDecoder;
+use App\Decoder\PasswordResetRequestDecoder;
 use App\Request\PasswordResetRequest;
+use App\Request\PasswordResetRequestRequest;
 use App\Services\UserService;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,11 +36,21 @@ class UserController extends AbstractController
      */
     #[Route('/api/password-reset-request', name: 'password_reset_request', methods: ['POST'])]
     public function passwordResetRequest(
+        PasswordResetRequestRequest $request,
+        PasswordResetRequestDecoder $passwordResetDecoder,
+    ): JsonResponse {
+        $params = $passwordResetDecoder->decode($request);
+
+        return $this->userService->resetPasswordRequest($params->email);
+    }
+
+    #[Route('/api/password-reset', name: 'password_reset', methods: ['POST'])]
+    public function passwordReset(
         PasswordResetRequest $request,
         PasswordResetDecoder $passwordResetDecoder,
     ): JsonResponse {
         $params = $passwordResetDecoder->decode($request);
 
-        return $this->userService->resetPasswordRequest($params->email);
+        return $this->userService->passwordReset($params->resetToken, $params->newPassword);
     }
 }
