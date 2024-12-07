@@ -71,6 +71,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     private ?Gender $gender = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $resetTokenExpiry = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
     public function __construct()
     {
         $this->setUuid(Uuid::v4());
@@ -251,5 +257,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return (string) $this->getUserIdentifier();
+    }
+
+    public function getResetTokenExpiry(): ?\DateTimeInterface
+    {
+        return $this->resetTokenExpiry;
+    }
+
+    public function setResetTokenExpiry(?\DateTimeInterface $resetTokenExpiry): static
+    {
+        $this->resetTokenExpiry = $resetTokenExpiry;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
     }
 }
