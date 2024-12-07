@@ -11,8 +11,6 @@ use Random\RandomException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -23,7 +21,7 @@ readonly class UserService
         private ValidatorService $validatorService,
         private UserRepository $userRepository,
         private FileHelper $fileHelper,
-        private MailerInterface $mailer,
+        private MailerService $mailerService,
         private ParameterBagInterface $params,
     ) {
     }
@@ -78,13 +76,11 @@ readonly class UserService
         $resetLink = sprintf($this->params->get('frontend')
             .'/reset-password/%s', $resetToken);
 
-        $email = (new Email())
-            ->from('noreply@example.com')
-            ->to($user->getEmail())
-            ->subject('Password Reset Request')
-            ->html(sprintf('<p>Click <a href="%s">here</a> to reset your password.</p>', $resetLink));
-
-        $this->mailer->send($email);
+        $this->mailerService->sendMail(
+            $user->getEmail(),
+            'Password Reset Request',
+            sprintf('<p>Click <a href="%s">here</a> to reset your password.</p>', $resetLink)
+        );
 
         return new JsonResponse(['message' => 'If the email exists, a reset link will be sent.'], 200);
     }
