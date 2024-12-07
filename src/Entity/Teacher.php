@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Constants\UserRoles;
 use App\Repository\TeacherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -35,6 +36,8 @@ class Teacher
     {
         $this->homework = new ArrayCollection();
         $this->lesson = new ArrayCollection();
+
+        $this->associatedUser?->setRoles([UserRoles::USER, UserRoles::TEACHER]);
     }
 
     public function getId(): ?int

@@ -11,16 +11,18 @@ use Sonata\AdminBundle\Form\Type\AdminType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class StudentAdmin extends AbstractAdmin
 {
     private FileHelper $fileHelper;
 
-    public function __construct(FileHelper $fileHelper)
+    public function __construct(FileHelper $fileHelper, private readonly UserPasswordHasherInterface $passwordHasher)
     {
         parent::__construct();
         $this->fileHelper = $fileHelper;
     }
+
     protected function configureFormFields(FormMapper $form): void
     {
         $form
@@ -107,6 +109,18 @@ final class StudentAdmin extends AbstractAdmin
     protected function prePersist(object $object): void
     {
         $this->manageFileUpload($object);
+        $this->hashPassword($object);
+    }
+
+    protected function hashPassword(Student $student): void
+    {
+        $user = $student->getAssociatedUser();
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $user->getPassword()
+        );
+
+        $user->setPassword($hashedPassword);
     }
 
     protected function preUpdate(object $object): void

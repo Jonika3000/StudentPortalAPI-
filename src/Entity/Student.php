@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Constants\UserRoles;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,6 +28,11 @@ class Student
     #[ORM\JoinColumn(nullable: true)]
     #[Assert\NotNull]
     private ?Classroom $classRoom = null;
+
+    public function __construct()
+    {
+        $this->associatedUser?->setRoles([UserRoles::USER, UserRoles::STUDENT]);
+    }
 
     public function getId(): ?int
     {
