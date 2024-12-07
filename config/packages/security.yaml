@@ -61,6 +61,7 @@ security:
         # Change these rules to adapt them to your needs
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/password-reset-request, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/.*, role: PUBLIC_ACCESS }
 

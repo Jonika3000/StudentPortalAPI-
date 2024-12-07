@@ -32,7 +32,7 @@ class UserController extends AbstractController
      * @throws TransportExceptionInterface
      * @throws RandomException
      */
-    #[Route('/password-reset-request', name: 'password_reset_request', methods: ['POST'])]
+    #[Route('/api/password-reset-request', name: 'password_reset_request', methods: ['POST'])]
     public function passwordResetRequest(
         PasswordResetRequest $request,
         PasswordResetDecoder $passwordResetDecoder,
