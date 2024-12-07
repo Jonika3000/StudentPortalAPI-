@@ -40,3 +40,7 @@ services:
         class: App\Admin\LessonAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\Lesson, manager_type: orm, label: Lesson }
+    admin.gradeRange:
+        class: App\Admin\GradeRangeAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\GradeRange, manager_type: orm, label: Grade }
