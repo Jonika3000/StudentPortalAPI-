@@ -4,12 +4,13 @@ namespace App\Services;
 
 use App\Entity\User;
 use App\Params\FilesParams\RegisterFilesParams;
+use App\Params\FilesParams\UserEditFilesParams;
 use App\Params\RegisterParams;
+use App\Params\UserEditParams;
 use App\Repository\UserRepository;
 use App\Utils\FileHelper;
 use Random\RandomException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -61,11 +62,11 @@ readonly class UserService
      * @throws RandomException
      * @throws TransportExceptionInterface
      */
-    public function resetPasswordRequest(string $email): JsonResponse
+    public function resetPasswordRequest(string $email): array
     {
         $user = $this->userRepository->findOneBy(['email' => $email]);
         if (!$user) {
-            return new JsonResponse(['message' => 'If the email exists, a reset link will be sent.'], 200);
+            return ['message' => 'If the email exists, a reset link will be sent.'];
         }
 
         $resetToken = bin2hex(random_bytes(32));
@@ -83,7 +84,7 @@ readonly class UserService
             ['resetLink' => $resetLink]
         );
 
-        return new JsonResponse(['message' => 'If the email exists, a reset link will be sent.'], 200);
+        return ['message' => 'If the email exists, a reset link will be sent.'];
     }
 
     /**
@@ -92,10 +93,10 @@ readonly class UserService
     public function passwordReset(
         $resetToken,
         $newPassword,
-    ): JsonResponse {
+    ): array {
         $user = $this->userRepository->findOneBy(['resetToken' => $resetToken]);
         if (!$user || $user->getResetTokenExpiry() < new \DateTime()) {
-            return new JsonResponse(['message' => 'Invalid or expired reset token.'], 400);
+            return ['message' => 'Invalid or expired reset token.'];
         }
 
         $user->setPassword($this->passwordHasher->hashPassword($user, $newPassword));
@@ -109,6 +110,21 @@ readonly class UserService
             'email/password/password_reset_success_email.html.twig'
         );
 
-        return new JsonResponse(['message' => 'Password successfully reset.'], 200);
+        return ['message' => 'Password successfully reset.'];
+    }
+
+    public function editAction(User $user, UserEditParams $params, ?UserEditFilesParams $files = null): void
+    {
+        $user->setPhoneNumber($params->phoneNumber);
+        $user->setAddress($params->address);
+
+        if ($files) {
+            $this->fileHelper->deleteImage($user->getAvatarPath(), true);
+
+            $avatarPath = $this->fileHelper->uploadImage($files->avatar, '/avatars/', true);
+            $user->setAvatarPath($avatarPath);
+        }
+
+        $this->userRepository->updateUser($user);
     }
 }
