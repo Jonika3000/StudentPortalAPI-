@@ -79,12 +79,16 @@ readonly class UserService
         $this->mailerService->sendMail(
             $user->getEmail(),
             'Password Reset Request',
-            sprintf('<p>Click <a href="%s">here</a> to reset your password.</p>', $resetLink)
+            'email/password/password_reset_request_email.html.twig',
+            ['resetLink' => $resetLink]
         );
 
         return new JsonResponse(['message' => 'If the email exists, a reset link will be sent.'], 200);
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function passwordReset(
         $resetToken,
         $newPassword,
@@ -98,6 +102,12 @@ readonly class UserService
         $user->setResetToken(null);
         $user->setResetTokenExpiry(null);
         $this->userRepository->saveUser($user);
+
+        $this->mailerService->sendMail(
+            $user->getEmail(),
+            'Password Successfully Changed',
+            'email/password/password_reset_success_email.html.twig'
+        );
 
         return new JsonResponse(['message' => 'Password successfully reset.'], 200);
     }
