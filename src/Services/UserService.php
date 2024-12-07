@@ -8,6 +8,7 @@ use App\Params\RegisterParams;
 use App\Repository\UserRepository;
 use App\Utils\FileHelper;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 readonly class UserService
 {
@@ -43,5 +44,10 @@ readonly class UserService
         $this->userRepository->saveUser($user);
 
         return $user;
+    }
+
+    public function getUserByToken(TokenInterface $token): \Symfony\Component\Security\Core\User\UserInterface
+    {
+        return $token->getUser();
     }
 }
