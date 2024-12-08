@@ -13,14 +13,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class GradeService
 {
     public function __construct(
-        private readonly GradeRepository               $gradeRepository,
-        private readonly StudentSubmissionRepository   $studentSubmissionRepository,
-        private readonly TeacherRepository             $teacherRepository,
+        private readonly GradeRepository $gradeRepository,
+        private readonly StudentSubmissionRepository $studentSubmissionRepository,
+        private readonly TeacherRepository $teacherRepository,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
     ) {
     }
 
-    //@TODO: errors handle
+    // @TODO: errors handle
     public function postAction(User $user, GradePostParams $params): string
     {
         $studentSubmission = $this->studentSubmissionRepository->find($params->studentSubmission);
@@ -46,6 +46,22 @@ class GradeService
             ->setTeacher($teacher);
 
         $this->gradeRepository->saveGrade($grade);
+
+        return 'Success';
+    }
+
+    public function deleteAction(User $user, Grade $grade): string
+    {
+        $teacher = $this->teacherRepository->findOneBy(['associatedUser' => $user->getId()]);
+        if (!$teacher) {
+            return 'Teacher not found.';
+        }
+
+        if ($teacher->getId() != $grade->getTeacher()->getId()) {
+            return 'Access denied: Teacher is not associated with this grade.';
+        }
+
+        $this->gradeRepository->deleteGrade($grade);
 
         return 'Success';
     }
