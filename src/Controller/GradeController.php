@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Constants\UserRoles;
 use App\Decoder\Grade\GradePostDecoder;
+use App\Entity\Grade;
 use App\Entity\User;
 use App\Request\Grade\GradePostRequest;
 use App\Services\GradeService;
@@ -39,5 +40,18 @@ class GradeController extends AbstractController
         $params = $decoder->decode($request);
 
         return new JsonResponse($this->gradeService->postAction($user, $params), 200);
+    }
+
+    #[IsGranted(UserRoles::TEACHER)]
+    #[Route('/api/grade/{id}', name: 'app_grade', methods: ['DELETE'])]
+    public function remove(Grade $grade): JsonResponse
+    {
+        $token = $this->tokenStorage->getToken();
+        $user = $this->userService->getUserByToken($token);
+        if (!$user instanceof User) {
+            throw new \Exception('User not found');
+        }
+
+        return new JsonResponse($this->gradeService->deleteAction($user, $grade), 200);
     }
 }

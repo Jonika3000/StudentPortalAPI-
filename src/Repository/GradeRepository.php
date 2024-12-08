@@ -23,6 +23,13 @@ class GradeRepository extends ServiceEntityRepository
         $entityManager->flush();
     }
 
+    public function deleteGrade(Grade $grade): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($grade);
+        $entityManager->flush();
+    }
+
     //    /**
     //     * @return Grade[] Returns an array of Grade objects
     //     */
