@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Decoder;
+namespace App\Decoder\User;
 
-use App\Params\RegisterParams;
-use App\Request\RegisterRequest;
+use App\Params\User\RegisterParams;
+use App\Request\User\RegisterRequest;
 
 class RegisterRequestDecoder
-// implements RequestDecoderInterface
 {
     public function decode(RegisterRequest $request): RegisterParams
     {

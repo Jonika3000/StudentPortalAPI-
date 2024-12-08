@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Params;
+namespace App\Params\User;
 
 class UserEditParams
 {

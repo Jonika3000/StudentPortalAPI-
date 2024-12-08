@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Decoder;
+namespace App\Decoder\User;
 
-use App\Params\RegisterParams;
-use App\Params\UserEditParams;
-use App\Request\RegisterRequest;
-use App\Request\UserEditRequest;
+use App\Params\User\UserEditParams;
+use App\Request\User\UserEditRequest;
 
 class UserEditRequestDecoder
-// implements RequestDecoderInterface
 {
     public function decode(UserEditRequest $request): UserEditParams
     {
