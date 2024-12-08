@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Params;
+namespace App\Params\Password;
 
 class PasswordResetRequestParams
 {

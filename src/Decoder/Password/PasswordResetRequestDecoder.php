@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Decoder;
+namespace App\Decoder\Password;
 
-use App\Params\PasswordResetRequestParams;
-use App\Request\PasswordResetRequestRequest;
+use App\Params\Password\PasswordResetRequestParams;
+use App\Request\Password\PasswordResetRequestRequest;
 
 class PasswordResetRequestDecoder
 {

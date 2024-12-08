@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Entity\User;
 use App\Params\FilesParams\RegisterFilesParams;
 use App\Params\FilesParams\UserEditFilesParams;
-use App\Params\RegisterParams;
-use App\Params\UserEditParams;
+use App\Params\User\RegisterParams;
+use App\Params\User\UserEditParams;
 use App\Repository\UserRepository;
 use App\Utils\FileHelper;
 use Random\RandomException;
@@ -115,8 +115,12 @@ readonly class UserService
 
     public function editAction(User $user, UserEditParams $params, ?UserEditFilesParams $files = null): void
     {
-        $user->setPhoneNumber($params->phoneNumber);
-        $user->setAddress($params->address);
+        if ($params->phoneNumber) {
+            $user->setPhoneNumber($params->phoneNumber);
+        }
+        if ($params->address) {
+            $user->setAddress($params->address);
+        }
 
         if ($files) {
             $this->fileHelper->deleteImage($user->getAvatarPath(), true);

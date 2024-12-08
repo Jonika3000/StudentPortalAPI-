@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Decoder\FileBagDecoder\RegisterFileBagDecoder;
-use App\Decoder\RegisterRequestDecoder;
-use App\Request\RegisterRequest;
+use App\Decoder\User\RegisterRequestDecoder;
+use App\Request\User\RegisterRequest;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

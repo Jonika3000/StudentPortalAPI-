@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Request;
+namespace App\Request\User;
 
 use App\Enums\Gender;
 use App\Shared\BaseRequest;

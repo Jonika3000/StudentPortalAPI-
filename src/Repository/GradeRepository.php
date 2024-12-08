@@ -16,6 +16,13 @@ class GradeRepository extends ServiceEntityRepository
         parent::__construct($registry, Grade::class);
     }
 
+    public function saveGrade(Grade $grade): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($grade);
+        $entityManager->flush();
+    }
+
     //    /**
     //     * @return Grade[] Returns an array of Grade objects
     //     */

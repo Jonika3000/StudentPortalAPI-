@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Decoder\FileBagDecoder\UserEditFileBagDecoder;
-use App\Decoder\PasswordResetDecoder;
-use App\Decoder\PasswordResetRequestDecoder;
-use App\Decoder\UserEditRequestDecoder;
+use App\Decoder\Password\PasswordResetDecoder;
+use App\Decoder\Password\PasswordResetRequestDecoder;
+use App\Decoder\User\UserEditRequestDecoder;
 use App\Entity\User;
-use App\Request\PasswordResetRequest;
-use App\Request\PasswordResetRequestRequest;
-use App\Request\UserEditRequest;
+use App\Request\Password\PasswordResetRequest;
+use App\Request\Password\PasswordResetRequestRequest;
+use App\Request\User\UserEditRequest;
 use App\Services\UserService;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

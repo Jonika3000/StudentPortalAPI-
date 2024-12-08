@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Request;
+namespace App\Request\Password;
 
 use App\Shared\BaseRequest;
 use Symfony\Component\Validator\Constraints\Email;
