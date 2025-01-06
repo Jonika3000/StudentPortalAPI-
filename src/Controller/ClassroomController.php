@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Constants\ErrorCodes;
-use App\Services\LessonService;
+use App\Constants\UserRoles;
+use App\Services\ClassroomService;
 use App\Services\UserService;
 use App\Shared\Response\Exception\IncorrectUserConfigurationException;
 use App\Shared\Response\ResponseError;
@@ -11,15 +12,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class LessonController extends AbstractController
+class ClassroomController extends AbstractController
 {
     public function __construct(
         private readonly UserService $userService,
-        private readonly LessonService $lessonService,
+        private readonly ClassroomService $classroomService,
     ) {
     }
 
+    #[IsGranted(UserRoles::STUDENT)]
     #[Route('/api/lesson', name: 'app_lesson')]
     public function getByStudent(): JsonResponse
     {
@@ -31,6 +34,6 @@ class LessonController extends AbstractController
             return new JsonResponse($response->serializeToJsonString(), Response::HTTP_BAD_REQUEST);
         }
 
-        return new JsonResponse($this->lessonService->getLessonsByStudent($user), Response::HTTP_OK);
+        return new JsonResponse($this->classroomService->getClassroomByStudent($user), Response::HTTP_OK);
     }
 }

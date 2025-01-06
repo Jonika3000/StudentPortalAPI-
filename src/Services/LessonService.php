@@ -3,18 +3,19 @@
 namespace App\Services;
 
 use App\Entity\User;
+use App\Repository\StudentRepository;
 use App\Repository\UserRepository;
 
 class LessonService
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private StudentRepository $studentRepository,
     ) {
     }
 
-    public function getLessonsByStudent(User $user): array
+    public function getLessonsByStudent(User $user): \Doctrine\Common\Collections\Collection
     {
-        $student = $this->userRepository->findOneBy(['associatedUser' => $user->getId()]);
+        $student = $this->studentRepository->findOneBy(['associatedUser' => $user->getId()]);
 
         $classroom = $student->getClassroom();
 

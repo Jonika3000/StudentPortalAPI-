@@ -31,7 +31,7 @@ class GradeController extends AbstractController
     {
         try {
             $user = $this->userService->getCurrentUser();
-        } catch (IncorrectUserConfigurationException $ex) {
+        } catch (IncorrectUserConfigurationException) {
             $response = (new ResponseError())->setCode(ErrorCodes::INCORRECT_USER_CONFIGURATION)->setMessage('User not found');
 
             return new JsonResponse($response->serializeToJsonString(), Response::HTTP_BAD_REQUEST);
@@ -48,7 +48,7 @@ class GradeController extends AbstractController
     {
         try {
             $user = $this->userService->getCurrentUser();
-        } catch (IncorrectUserConfigurationException $ex) {
+        } catch (IncorrectUserConfigurationException) {
             $response = (new ResponseError())->setCode(ErrorCodes::INCORRECT_USER_CONFIGURATION)->setMessage('User not found');
 
             return new JsonResponse($response->serializeToJsonString(), Response::HTTP_BAD_REQUEST);
