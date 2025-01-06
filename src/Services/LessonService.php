@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Entity\User;
 use App\Repository\StudentRepository;
-use App\Repository\UserRepository;
 
 class LessonService
 {

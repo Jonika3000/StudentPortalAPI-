@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Entity\Student;
+use App\Entity\User;
 use App\Repository\StudentRepository;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use App\Shared\Response\Exception\Student\StudentNotFoundException;
 
 readonly class StudentService
 {
@@ -12,15 +13,17 @@ readonly class StudentService
     {
     }
 
-    public function getStudentByToken(TokenInterface $token): Student
+    /**
+     * @throws StudentNotFoundException
+     */
+    public function getStudentByUser(User $user): Student
     {
-        $user = $token->getUser();
+        $student = $this->studentRepository->findOneBy(['associatedUser' => $user->getId()]);
 
-        return $this->studentRepository->findOneBy(['associatedUser' => $user->getId()]);
-    }
+        if (empty($student)) {
+            throw new StudentNotFoundException();
+        }
 
-    public function getStudentById(int $id): Student
-    {
-        return $this->studentRepository->find($id);
+        return $student;
     }
 }

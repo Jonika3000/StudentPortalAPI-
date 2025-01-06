@@ -9,6 +9,7 @@ use App\Params\User\RegisterParams;
 use App\Params\User\UserEditParams;
 use App\Repository\UserRepository;
 use App\Shared\Response\Exception\IncorrectUserConfigurationException;
+use App\Shared\Response\Exception\MailException;
 use App\Utils\FileHelper;
 use Random\RandomException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -64,7 +65,7 @@ readonly class UserService
 
     /**
      * @throws RandomException
-     * @throws TransportExceptionInterface
+     * @throws MailException
      */
     public function resetPasswordRequest(string $email): array
     {
@@ -81,12 +82,16 @@ readonly class UserService
         $resetLink = sprintf($this->params->get('frontend')
             .'/reset-password/%s', $resetToken);
 
-        $this->mailerService->sendMail(
-            $user->getEmail(),
-            'Password Reset Request',
-            'email/password/password_reset_request_email.html.twig',
-            ['resetLink' => $resetLink]
-        );
+        try {
+            $this->mailerService->sendMail(
+                $user->getEmail(),
+                'Password Reset Request',
+                'email/password/password_reset_request_email.html.twig',
+                ['resetLink' => $resetLink]
+            );
+        } catch (TransportExceptionInterface) {
+            throw new MailException();
+        }
 
         return ['message' => 'If the email exists, a reset link will be sent.'];
     }
@@ -106,7 +111,7 @@ readonly class UserService
     }
 
     /**
-     * @throws TransportExceptionInterface
+     * @throws MailException
      */
     public function passwordReset(
         $resetToken,
@@ -122,11 +127,15 @@ readonly class UserService
         $user->setResetTokenExpiry(null);
         $this->userRepository->saveUser($user);
 
-        $this->mailerService->sendMail(
-            $user->getEmail(),
-            'Password Successfully Changed',
-            'email/password/password_reset_success_email.html.twig'
-        );
+        try {
+            $this->mailerService->sendMail(
+                $user->getEmail(),
+                'Password Successfully Changed',
+                'email/password/password_reset_success_email.html.twig'
+            );
+        } catch (TransportExceptionInterface) {
+            throw new MailException();
+        }
 
         return ['message' => 'Password successfully reset.'];
     }

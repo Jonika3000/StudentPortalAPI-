@@ -27,6 +27,6 @@ class RegistrationController extends AbstractController
         $params = $this->registerRequestDecoder->decode($request);
         $this->userService->postAction($params, $files);
 
-        return $this->json(['message' => 'Registered Successfully']);
+        return new JsonResponse(['message' => 'Registered Successfully']);
     }
 }

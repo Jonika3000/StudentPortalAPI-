@@ -8,9 +8,13 @@ use App\Params\Grade\GradePostParams;
 use App\Repository\GradeRepository;
 use App\Repository\StudentSubmissionRepository;
 use App\Repository\TeacherRepository;
+use App\Shared\Response\Exception\AccessDeniedException;
+use App\Shared\Response\Exception\Student\StudentSubmissionNotFound;
+use App\Shared\Response\Exception\Teacher\TeacherNotFoundException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class GradeService
+class GradeService extends AbstractController
 {
     public function __construct(
         private readonly GradeRepository $gradeRepository,
@@ -20,21 +24,25 @@ class GradeService
     ) {
     }
 
-    // @TODO: errors handle
+    /**
+     * @throws StudentSubmissionNotFound
+     * @throws TeacherNotFoundException
+     * @throws AccessDeniedException
+     */
     public function postAction(User $user, GradePostParams $params): string
     {
         $studentSubmission = $this->studentSubmissionRepository->find($params->studentSubmission);
         if (!$studentSubmission) {
-            return 'Student submission not found.';
+            throw new StudentSubmissionNotFound();
         }
 
         $teacher = $this->teacherRepository->findOneBy(['associatedUser' => $user->getId()]);
         if (!$teacher) {
-            return 'Teacher not found.';
+            throw new TeacherNotFoundException();
         }
 
         if (!$this->authorizationChecker->isGranted('grade', $studentSubmission)) {
-            return 'Access denied: Teacher is not associated with this lesson.';
+            throw new AccessDeniedException();
         }
 
         $existingGrade = $this->gradeRepository->findOneBy(['studentSubmission' => $studentSubmission]);
@@ -50,15 +58,19 @@ class GradeService
         return 'Success';
     }
 
+    /**
+     * @throws TeacherNotFoundException
+     * @throws AccessDeniedException
+     */
     public function deleteAction(User $user, Grade $grade): string
     {
         $teacher = $this->teacherRepository->findOneBy(['associatedUser' => $user->getId()]);
         if (!$teacher) {
-            return 'Teacher not found.';
+            throw new TeacherNotFoundException();
         }
 
         if ($teacher->getId() != $grade->getTeacher()->getId()) {
-            return 'Access denied: Teacher is not associated with this grade.';
+            throw new AccessDeniedException();
         }
 
         $this->gradeRepository->deleteGrade($grade);
