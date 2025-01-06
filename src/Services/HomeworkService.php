@@ -105,7 +105,7 @@ class HomeworkService
             throw new StudentNotFoundException();
         }
 
-        if ($homework->getLesson()->getClassroom() !== $student->getClassRoom()) {
+        if ($homework->getLesson()->getClassroom() !== $student->getClassroom()) {
             throw new AccessDeniedException();
         }
 
