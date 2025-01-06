@@ -40,7 +40,7 @@ readonly class UserService
             $user,
             $params->password
         );
-        $avatarPath = $this->fileHelper->uploadImage($files->avatar, '/avatars/', true);
+        $avatarPath = $this->fileHelper->uploadFile($files->avatar, '/images/avatars/', true);
         $user->setAvatarPath($avatarPath);
         $user->setPassword($hashedPassword);
         $user->setBirthday($params->birthday);
@@ -152,7 +152,7 @@ readonly class UserService
         if ($files) {
             $this->fileHelper->deleteImage($user->getAvatarPath(), true);
 
-            $avatarPath = $this->fileHelper->uploadImage($files->avatar, '/avatars/', true);
+            $avatarPath = $this->fileHelper->uploadFile($files->avatar, '/images/avatars/', true);
             $user->setAvatarPath($avatarPath);
         }
 

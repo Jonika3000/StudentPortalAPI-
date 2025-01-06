@@ -12,7 +12,7 @@ class FileHelper
     {
     }
 
-    public function uploadImage(UploadedFile $uploadedFile, string $path, bool $resizeImages): string
+    public function uploadFile(UploadedFile $uploadedFile, string $path, bool $resizeImages): string
     {
         $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $uploadedFile->guessExtension();
@@ -28,7 +28,7 @@ class FileHelper
             }
         }
 
-        $fullPath = 'uploads/images'.$path.$newFilename.'.'.$extension;
+        $fullPath = 'uploads'.$path.$newFilename.'.'.$extension;
         $uploadedFile->move($systemDir, $newFilename.'.'.$extension);
 
         return $fullPath;

@@ -16,6 +16,14 @@ class HomeworkFileRepository extends ServiceEntityRepository
         parent::__construct($registry, HomeworkFile::class);
     }
 
+    public function save(HomeworkFile $homeworkFile): void
+    {
+        $entityManager = $this->getEntityManager();
+
+        $entityManager->persist($homeworkFile);
+        $entityManager->flush();
+    }
+
     //    /**
     //     * @return HomeworkFile[] Returns an array of HomeworkFile objects
     //     */

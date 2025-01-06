@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// TODO: edit
 #[Route('/api', name: 'api_')]
 class GradeController extends AbstractController
 {

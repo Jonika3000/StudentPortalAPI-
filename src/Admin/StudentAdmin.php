@@ -134,7 +134,7 @@ final class StudentAdmin extends AbstractAdmin
         $file = $this->getForm()->get('associatedUser')->get('avatarPath')->getData();
 
         if ($file instanceof UploadedFile) {
-            $path = $this->fileHelper->uploadImage($file, '/avatars/', true);
+            $path = $this->fileHelper->uploadFile($file, '/images/avatars/', true);
             $student->getAssociatedUser()->setAvatarPath($path);
         }
     }
