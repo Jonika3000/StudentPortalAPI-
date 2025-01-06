@@ -2,12 +2,12 @@
 
 namespace App\Shared\Response;
 
-class ConstraintViolation
+readonly class ConstraintViolation
 {
     public function __construct(
-        public readonly string $property,
-        public readonly string $value,
-        public readonly string $message,
+        public string $property,
+        public string $value,
+        public string $message,
     ) {
     }
 }

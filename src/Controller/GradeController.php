@@ -2,39 +2,39 @@
 
 namespace App\Controller;
 
+use App\Constants\ErrorCodes;
 use App\Constants\UserRoles;
 use App\Decoder\Grade\GradePostDecoder;
 use App\Entity\Grade;
-use App\Entity\User;
 use App\Request\Grade\GradePostRequest;
 use App\Services\GradeService;
 use App\Services\UserService;
+use App\Shared\Response\Exception\IncorrectUserConfigurationException;
+use App\Shared\Response\ResponseError;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class GradeController extends AbstractController
 {
     public function __construct(
-        private readonly TokenStorageInterface $tokenStorage,
         private readonly GradeService $gradeService,
         private readonly UserService $userService,
     ) {
     }
 
-    /**
-     * @throws \Exception
-     */
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/api/grade', name: 'app_grade', methods: ['POST'])]
-    public function index(GradePostRequest $request, GradePostDecoder $decoder): JsonResponse
+    #[Route('/api/grade', name: 'app_grade_post', methods: ['POST'])]
+    public function post(GradePostRequest $request, GradePostDecoder $decoder): JsonResponse
     {
-        $token = $this->tokenStorage->getToken();
-        $user = $this->userService->getUserByToken($token);
-        if (!$user instanceof User) {
-            throw new \Exception('User not found');
+        try {
+            $user = $this->userService->getCurrentUser();
+        } catch (IncorrectUserConfigurationException $ex) {
+            $response = (new ResponseError())->setCode(ErrorCodes::INCORRECT_USER_CONFIGURATION)->setMessage('User not found');
+
+            return new JsonResponse($response->serializeToJsonString(), Response::HTTP_BAD_REQUEST);
         }
 
         $params = $decoder->decode($request);
@@ -43,13 +43,15 @@ class GradeController extends AbstractController
     }
 
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/api/grade/{id}', name: 'app_grade', methods: ['DELETE'])]
+    #[Route('/api/grade/{id}', name: 'app_grade_delete', methods: ['DELETE'])]
     public function remove(Grade $grade): JsonResponse
     {
-        $token = $this->tokenStorage->getToken();
-        $user = $this->userService->getUserByToken($token);
-        if (!$user instanceof User) {
-            throw new \Exception('User not found');
+        try {
+            $user = $this->userService->getCurrentUser();
+        } catch (IncorrectUserConfigurationException $ex) {
+            $response = (new ResponseError())->setCode(ErrorCodes::INCORRECT_USER_CONFIGURATION)->setMessage('User not found');
+
+            return new JsonResponse($response->serializeToJsonString(), Response::HTTP_BAD_REQUEST);
         }
 
         return new JsonResponse($this->gradeService->deleteAction($user, $grade), 200);

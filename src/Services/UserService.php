@@ -8,11 +8,14 @@ use App\Params\FilesParams\UserEditFilesParams;
 use App\Params\User\RegisterParams;
 use App\Params\User\UserEditParams;
 use App\Repository\UserRepository;
+use App\Shared\Response\Exception\IncorrectUserConfigurationException;
 use App\Utils\FileHelper;
 use Random\RandomException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 readonly class UserService
@@ -24,6 +27,7 @@ readonly class UserService
         private FileHelper $fileHelper,
         private MailerService $mailerService,
         private ParameterBagInterface $params,
+        private TokenStorageInterface $tokenStorage,
     ) {
     }
 
@@ -85,6 +89,20 @@ readonly class UserService
         );
 
         return ['message' => 'If the email exists, a reset link will be sent.'];
+    }
+
+    /**
+     * @throws IncorrectUserConfigurationException
+     */
+    public function getCurrentUser(): User|JsonResponse
+    {
+        $token = $this->tokenStorage->getToken();
+        $user = $this->getUserByToken($token);
+        if (!$user instanceof User) {
+            throw new IncorrectUserConfigurationException();
+        }
+
+        return $user;
     }
 
     /**
