@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Constants\ErrorCodes;
 use App\Constants\UserRoles;
+use App\Entity\Classroom;
 use App\Services\ClassroomService;
 use App\Services\UserService;
 use App\Shared\Response\Exception\IncorrectUserConfigurationException;
@@ -23,7 +24,7 @@ class ClassroomController extends AbstractController
     }
 
     #[IsGranted(UserRoles::STUDENT)]
-    #[Route('/api/lesson', name: 'app_lesson')]
+    #[Route('/api/classroom_me', name: 'app_classroom_student', methods: ['GET'])]
     public function getByStudent(): JsonResponse
     {
         try {
@@ -35,5 +36,12 @@ class ClassroomController extends AbstractController
         }
 
         return new JsonResponse($this->classroomService->getClassroomByStudent($user), Response::HTTP_OK);
+    }
+
+    #[IsGranted(UserRoles::TEACHER)]
+    #[Route('/api/classroom/{id}', name: 'app_classroom_teacher', methods: ['GET'])]
+    public function getClassroomInfo(Classroom $classroom): JsonResponse
+    {
+        return new JsonResponse($classroom, Response::HTTP_OK);
     }
 }

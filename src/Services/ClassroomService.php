@@ -16,4 +16,9 @@ class ClassroomService
         $student = $this->studentRepository->findOneBy(['associatedUser' => $user->getId()]);
         return $student->getClassroom();
     }
+    public function getClassroomByTeacher(User $user): ?\App\Entity\Classroom
+    {
+        $student = $this->studentRepository->findOneBy(['associatedUser' => $user->getId()]);
+        return $student->getClassroom();
+    }
 }
