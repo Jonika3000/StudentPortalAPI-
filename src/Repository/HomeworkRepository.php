@@ -16,11 +16,18 @@ class HomeworkRepository extends ServiceEntityRepository
         parent::__construct($registry, Homework::class);
     }
 
-    public function seveHomework(Homework $homework): void
+    public function saveAction(Homework $homework): void
     {
         $entityManager = $this->getEntityManager();
 
         $entityManager->persist($homework);
+        $entityManager->flush();
+    }
+
+    public function deleteAction(Homework $homework): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($homework);
         $entityManager->flush();
     }
 

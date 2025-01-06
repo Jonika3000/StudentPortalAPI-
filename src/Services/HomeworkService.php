@@ -17,7 +17,6 @@ use App\Shared\Response\Exception\Lesson\LessonNotFound;
 use App\Shared\Response\Exception\Student\StudentNotFoundException;
 use App\Shared\Response\Exception\Teacher\TeacherNotFoundException;
 use App\Shared\Response\Exception\User\AccessDeniedException;
-use App\Shared\Response\Homework\HomeworkResponse;
 use App\Utils\FileHelper;
 use Symfony\Component\Uid\Uuid;
 
@@ -30,7 +29,7 @@ class HomeworkService
         private readonly FileHelper $fileHelper,
         private readonly HomeworkFileRepository $homeworkFileRepository,
         private readonly StudentRepository $studentRepository,
-        private readonly HomeworkEncoder $homeworkEncoder
+        private readonly HomeworkEncoder $homeworkEncoder,
     ) {
     }
 
@@ -70,11 +69,11 @@ class HomeworkService
                 $homeworkFile->setPath($filePath);
                 $homeworkFile->setName(Uuid::v1());
 
-                $this->homeworkFileRepository->save($homeworkFile);
+                $this->homeworkFileRepository->saveAction($homeworkFile);
             }
         }
 
-        $this->homeworkRepository->seveHomework($homework);
+        $this->homeworkRepository->saveAction($homework);
 
         return ['message' => 'Success.'];
     }
@@ -117,5 +116,27 @@ class HomeworkService
         $response = $this->homeworkEncoder->encode($homework, $studentSubmission);
 
         return $response->toArray();
+    }
+
+    /**
+     * @throws AccessDeniedException
+     * @throws TeacherNotFoundException
+     */
+    public function deleteAction(Homework $homework, User $user): void
+    {
+        $teacher = $this->teacherRepository->findOneBy(['associatedUser' => $user->getId()]);
+        if (!$teacher) {
+            throw new TeacherNotFoundException();
+        }
+
+        if ($teacher->getId() != $homework->getTeacher()->getId()) {
+            throw new AccessDeniedException();
+        }
+
+        foreach ($homework->getHomeworkFiles() as $homeworkFile) {
+            $this->fileHelper->deleteImage($homeworkFile->getPath(), false);
+        }
+
+        $this->homeworkRepository->deleteAction($homework);
     }
 }

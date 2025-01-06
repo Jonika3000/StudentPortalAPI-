@@ -29,7 +29,7 @@ class GradeService extends AbstractController
      * @throws TeacherNotFoundException
      * @throws AccessDeniedException
      */
-    public function postAction(User $user, GradePostParams $params): string
+    public function postAction(User $user, GradePostParams $params): void
     {
         $studentSubmission = $this->studentSubmissionRepository->find($params->studentSubmission);
         if (!$studentSubmission) {
@@ -54,15 +54,13 @@ class GradeService extends AbstractController
             ->setTeacher($teacher);
 
         $this->gradeRepository->saveGrade($grade);
-
-        return 'Success';
     }
 
     /**
      * @throws TeacherNotFoundException
      * @throws AccessDeniedException
      */
-    public function deleteAction(User $user, Grade $grade): string
+    public function deleteAction(User $user, Grade $grade): void
     {
         $teacher = $this->teacherRepository->findOneBy(['associatedUser' => $user->getId()]);
         if (!$teacher) {
@@ -74,7 +72,5 @@ class GradeService extends AbstractController
         }
 
         $this->gradeRepository->deleteGrade($grade);
-
-        return 'Success';
     }
 }

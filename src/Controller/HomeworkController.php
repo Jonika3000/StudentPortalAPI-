@@ -77,4 +77,19 @@ class HomeworkController extends AbstractController
             return ExceptionHandleHelper::handleException($exception);
         }
     }
+
+    #[IsGranted(UserRoles::TEACHER)]
+    #[Route('/homework/{id}', name: 'homework_delete', methods: ['DELETE'])]
+    public function remove(Homework $homework): JsonResponse
+    {
+        try {
+            $user = $this->userService->getCurrentUser();
+
+            $this->homeworkService->deleteAction($homework, $user);
+
+            return new JsonResponse('Success', Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return ExceptionHandleHelper::handleException($exception);
+        }
+    }
 }

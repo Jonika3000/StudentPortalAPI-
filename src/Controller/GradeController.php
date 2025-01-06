@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-// TODO: edit
 #[Route('/api', name: 'api_')]
 class GradeController extends AbstractController
 {
@@ -34,9 +33,9 @@ class GradeController extends AbstractController
 
             $params = $decoder->decode($request);
 
-            $response = $this->gradeService->postAction($user, $params);
+            $this->gradeService->postAction($user, $params);
 
-            return new JsonResponse($response, Response::HTTP_OK);
+            return new JsonResponse('Success', Response::HTTP_OK);
         } catch (\Exception $exception) {
             return ExceptionHandleHelper::handleException($exception);
         }
@@ -49,9 +48,9 @@ class GradeController extends AbstractController
         try {
             $user = $this->userService->getCurrentUser();
 
-            $response = $this->gradeService->deleteAction($user, $grade);
+            $this->gradeService->deleteAction($user, $grade);
 
-            return new JsonResponse($response, Response::HTTP_OK);
+            return new JsonResponse('Success', Response::HTTP_OK);
         } catch (\Exception $exception) {
             return ExceptionHandleHelper::handleException($exception);
         }
