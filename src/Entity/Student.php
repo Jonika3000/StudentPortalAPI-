@@ -27,7 +27,7 @@ class Student
     #[ORM\ManyToOne(inversedBy: 'students')]
     #[ORM\JoinColumn(nullable: true)]
     #[Assert\NotNull]
-    private ?Classroom $classRoom = null;
+    private ?Classroom $classroom = null;
 
     public function __construct()
     {
@@ -63,14 +63,14 @@ class Student
         return $this;
     }
 
-    public function getClassRoom(): ?Classroom
+    public function getClassroom(): ?Classroom
     {
-        return $this->classRoom;
+        return $this->classroom;
     }
 
-    public function setClassRoom(?Classroom $classRoom): static
+    public function setClassroom(?Classroom $classroom): static
     {
-        $this->classRoom = $classRoom;
+        $this->classroom = $classroom;
 
         return $this;
     }

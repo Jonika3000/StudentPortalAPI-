@@ -38,13 +38,13 @@ class Homework
     /**
      * @var Collection<int, HomeworkFile>
      */
-    #[ORM\OneToMany(targetEntity: HomeworkFile::class, mappedBy: 'homework')]
+    #[ORM\OneToMany(targetEntity: HomeworkFile::class, mappedBy: 'homework', cascade: ['remove'])]
     private Collection $homeworkFiles;
 
     /**
      * @var Collection<int, StudentSubmission>
      */
-    #[ORM\OneToMany(targetEntity: StudentSubmission::class, mappedBy: 'homework')]
+    #[ORM\OneToMany(targetEntity: StudentSubmission::class, mappedBy: 'homework', cascade: ['remove'])]
     private Collection $studentSubmissions;
 
     public function __construct()

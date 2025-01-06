@@ -8,11 +8,15 @@ use App\Params\FilesParams\UserEditFilesParams;
 use App\Params\User\RegisterParams;
 use App\Params\User\UserEditParams;
 use App\Repository\UserRepository;
+use App\Shared\Response\Exception\MailException;
+use App\Shared\Response\Exception\User\IncorrectUserConfigurationException;
 use App\Utils\FileHelper;
 use Random\RandomException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 readonly class UserService
@@ -24,6 +28,7 @@ readonly class UserService
         private FileHelper $fileHelper,
         private MailerService $mailerService,
         private ParameterBagInterface $params,
+        private TokenStorageInterface $tokenStorage,
     ) {
     }
 
@@ -35,7 +40,7 @@ readonly class UserService
             $user,
             $params->password
         );
-        $avatarPath = $this->fileHelper->uploadImage($files->avatar, '/avatars/', true);
+        $avatarPath = $this->fileHelper->uploadFile($files->avatar, '/images/avatars/', true);
         $user->setAvatarPath($avatarPath);
         $user->setPassword($hashedPassword);
         $user->setBirthday($params->birthday);
@@ -60,7 +65,7 @@ readonly class UserService
 
     /**
      * @throws RandomException
-     * @throws TransportExceptionInterface
+     * @throws MailException
      */
     public function resetPasswordRequest(string $email): array
     {
@@ -77,18 +82,36 @@ readonly class UserService
         $resetLink = sprintf($this->params->get('frontend')
             .'/reset-password/%s', $resetToken);
 
-        $this->mailerService->sendMail(
-            $user->getEmail(),
-            'Password Reset Request',
-            'email/password/password_reset_request_email.html.twig',
-            ['resetLink' => $resetLink]
-        );
+        try {
+            $this->mailerService->sendMail(
+                $user->getEmail(),
+                'Password Reset Request',
+                'email/password/password_reset_request_email.html.twig',
+                ['resetLink' => $resetLink]
+            );
+        } catch (TransportExceptionInterface) {
+            throw new MailException();
+        }
 
         return ['message' => 'If the email exists, a reset link will be sent.'];
     }
 
     /**
-     * @throws TransportExceptionInterface
+     * @throws IncorrectUserConfigurationException
+     */
+    public function getCurrentUser(): User|JsonResponse
+    {
+        $token = $this->tokenStorage->getToken();
+        $user = $this->getUserByToken($token);
+        if (!$user instanceof User) {
+            throw new IncorrectUserConfigurationException();
+        }
+
+        return $user;
+    }
+
+    /**
+     * @throws MailException
      */
     public function passwordReset(
         $resetToken,
@@ -104,11 +127,15 @@ readonly class UserService
         $user->setResetTokenExpiry(null);
         $this->userRepository->saveUser($user);
 
-        $this->mailerService->sendMail(
-            $user->getEmail(),
-            'Password Successfully Changed',
-            'email/password/password_reset_success_email.html.twig'
-        );
+        try {
+            $this->mailerService->sendMail(
+                $user->getEmail(),
+                'Password Successfully Changed',
+                'email/password/password_reset_success_email.html.twig'
+            );
+        } catch (TransportExceptionInterface) {
+            throw new MailException();
+        }
 
         return ['message' => 'Password successfully reset.'];
     }
@@ -125,7 +152,7 @@ readonly class UserService
         if ($files) {
             $this->fileHelper->deleteImage($user->getAvatarPath(), true);
 
-            $avatarPath = $this->fileHelper->uploadImage($files->avatar, '/avatars/', true);
+            $avatarPath = $this->fileHelper->uploadFile($files->avatar, '/images/avatars/', true);
             $user->setAvatarPath($avatarPath);
         }
 

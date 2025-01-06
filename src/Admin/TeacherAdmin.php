@@ -154,7 +154,7 @@ class TeacherAdmin extends AbstractAdmin
         $file = $this->getForm()->get('associatedUser')->get('avatarPath')->getData();
 
         if ($file instanceof UploadedFile) {
-            $path = $this->fileHelper->uploadImage($file, '/avatars/', true);
+            $path = $this->fileHelper->uploadFile($file, '/images/avatars/', true);
             $teacher->getAssociatedUser()->setAvatarPath($path);
         }
     }

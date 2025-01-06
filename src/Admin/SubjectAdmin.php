@@ -89,7 +89,7 @@ final class SubjectAdmin extends AbstractAdmin
         $file = $this->getForm()->get('imagePath')->getData();
 
         if ($file instanceof UploadedFile) {
-            $path = $this->fileHelper->uploadImage($file, '/subject/', false);
+            $path = $this->fileHelper->uploadFile($file, '/images/subject/', false);
             $subject->setImagePath($path);
         }
     }

@@ -72,7 +72,7 @@ class Classroom
     {
         if (!$this->students->contains($student)) {
             $this->students->add($student);
-            $student->setClassRoom($this);
+            $student->setClassroom($this);
         }
 
         return $this;
@@ -82,8 +82,8 @@ class Classroom
     {
         if ($this->students->removeElement($student)) {
             // set the owning side to null (unless already changed)
-            if ($student->getClassRoom() === $this) {
-                $student->setClassRoom(null);
+            if ($student->getClassroom() === $this) {
+                $student->setClassroom(null);
             }
         }
 

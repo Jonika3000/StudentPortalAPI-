@@ -5,53 +5,54 @@ namespace App\Controller;
 use App\Constants\UserRoles;
 use App\Decoder\Grade\GradePostDecoder;
 use App\Entity\Grade;
-use App\Entity\User;
 use App\Request\Grade\GradePostRequest;
 use App\Services\GradeService;
 use App\Services\UserService;
+use App\Utils\ExceptionHandleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/api', name: 'api_')]
 class GradeController extends AbstractController
 {
     public function __construct(
-        private readonly TokenStorageInterface $tokenStorage,
         private readonly GradeService $gradeService,
         private readonly UserService $userService,
     ) {
     }
 
-    /**
-     * @throws \Exception
-     */
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/api/grade', name: 'app_grade', methods: ['POST'])]
-    public function index(GradePostRequest $request, GradePostDecoder $decoder): JsonResponse
+    #[Route('/grade', name: 'grade_post', methods: ['POST'])]
+    public function post(GradePostRequest $request, GradePostDecoder $decoder): JsonResponse
     {
-        $token = $this->tokenStorage->getToken();
-        $user = $this->userService->getUserByToken($token);
-        if (!$user instanceof User) {
-            throw new \Exception('User not found');
+        try {
+            $user = $this->userService->getCurrentUser();
+
+            $params = $decoder->decode($request);
+
+            $this->gradeService->postAction($user, $params);
+
+            return new JsonResponse('Success', Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return ExceptionHandleHelper::handleException($exception);
         }
-
-        $params = $decoder->decode($request);
-
-        return new JsonResponse($this->gradeService->postAction($user, $params), 200);
     }
 
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/api/grade/{id}', name: 'app_grade', methods: ['DELETE'])]
+    #[Route('/grade/{id}', name: 'grade_delete', methods: ['DELETE'])]
     public function remove(Grade $grade): JsonResponse
     {
-        $token = $this->tokenStorage->getToken();
-        $user = $this->userService->getUserByToken($token);
-        if (!$user instanceof User) {
-            throw new \Exception('User not found');
-        }
+        try {
+            $user = $this->userService->getCurrentUser();
 
-        return new JsonResponse($this->gradeService->deleteAction($user, $grade), 200);
+            $this->gradeService->deleteAction($user, $grade);
+
+            return new JsonResponse('Success', Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return ExceptionHandleHelper::handleException($exception);
+        }
     }
 }

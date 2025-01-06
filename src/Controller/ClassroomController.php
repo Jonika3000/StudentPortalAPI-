@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Constants\UserRoles;
-use App\Entity\Student;
-use App\Services\StudentService;
+use App\Entity\Classroom;
+use App\Services\ClassroomService;
 use App\Services\UserService;
 use App\Utils\ExceptionHandleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,30 +14,31 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api', name: 'api_')]
-class StudentController extends AbstractController
+class ClassroomController extends AbstractController
 {
     public function __construct(
         private readonly UserService $userService,
-        private readonly StudentService $studentService,
+        private readonly ClassroomService $classroomService,
     ) {
     }
 
-    #[Route('/student/me', name: 'student_me', methods: 'GET')]
-    public function index(): JsonResponse
+    #[IsGranted(UserRoles::STUDENT)]
+    #[Route('/classroom/me', name: 'classroom_student', methods: ['GET'])]
+    public function getByStudent(): JsonResponse
     {
         try {
             $user = $this->userService->getCurrentUser();
 
-            return new JsonResponse($this->studentService->getStudentByUser($user), Response::HTTP_OK);
+            return new JsonResponse($this->classroomService->getClassroomByStudent($user), Response::HTTP_OK);
         } catch (\Exception $exception) {
             return ExceptionHandleHelper::handleException($exception);
         }
     }
 
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/student/{id}', name: 'student_get', methods: 'GET')]
-    public function find(Student $student): JsonResponse
+    #[Route('/classroom/{id}', name: 'classroom_teacher', methods: ['GET'])]
+    public function getClassroomInfo(Classroom $classroom): JsonResponse
     {
-        return new JsonResponse($student, Response::HTTP_OK);
+        return new JsonResponse($classroom, Response::HTTP_OK);
     }
 }
