@@ -50,9 +50,31 @@ class HomeworkController extends AbstractController
         }
     }
 
-    #[Route('/homework/{id}', name: 'homework_get_by_id', methods: ['GET'])]
-    public function view(Homework $homework): JsonResponse
+    #[IsGranted(UserRoles::TEACHER)]
+    #[Route('/homework/{id}', name: 'homework_get_by_id_teacher', methods: ['GET'])]
+    public function viewTeacher(Homework $homework): JsonResponse
     {
-        return new JsonResponse($homework, Response::HTTP_OK);
+        try {
+            $user = $this->userService->getCurrentUser();
+            $this->homeworkService->checkAccessHomeworkTeacher($homework, $user);
+
+            return new JsonResponse($homework, Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return ExceptionHandleHelper::handleException($exception);
+        }
+    }
+
+    #[IsGranted(UserRoles::STUDENT)]
+    #[Route('/homework/{id}', name: 'homework_get_by_id_student', methods: ['GET'])]
+    public function viewStudent(Homework $homework): JsonResponse
+    {
+        try {
+            $user = $this->userService->getCurrentUser();
+            $response = $this->homeworkService->getHomeworkStudent($homework, $user);
+
+            return new JsonResponse($response, Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return ExceptionHandleHelper::handleException($exception);
+        }
     }
 }
