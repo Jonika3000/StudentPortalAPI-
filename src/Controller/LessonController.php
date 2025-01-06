@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/api', name: 'api_')]
 class LessonController extends AbstractController
 {
     public function __construct(
@@ -18,7 +19,7 @@ class LessonController extends AbstractController
     ) {
     }
 
-    #[Route('/api/lesson', name: 'app_lesson')]
+    #[Route('/lesson', name: 'lesson')]
     public function getByStudent(): JsonResponse
     {
         try {

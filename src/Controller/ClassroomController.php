@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/api', name: 'api_')]
 class ClassroomController extends AbstractController
 {
     public function __construct(
@@ -22,7 +23,7 @@ class ClassroomController extends AbstractController
     }
 
     #[IsGranted(UserRoles::STUDENT)]
-    #[Route('/api/classroom/me', name: 'app_classroom_student', methods: ['GET'])]
+    #[Route('/classroom/me', name: 'classroom_student', methods: ['GET'])]
     public function getByStudent(): JsonResponse
     {
         try {
@@ -35,7 +36,7 @@ class ClassroomController extends AbstractController
     }
 
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/api/classroom/{id}', name: 'app_classroom_teacher', methods: ['GET'])]
+    #[Route('/classroom/{id}', name: 'classroom_teacher', methods: ['GET'])]
     public function getClassroomInfo(Classroom $classroom): JsonResponse
     {
         return new JsonResponse($classroom, Response::HTTP_OK);

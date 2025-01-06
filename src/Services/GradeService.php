@@ -8,9 +8,9 @@ use App\Params\Grade\GradePostParams;
 use App\Repository\GradeRepository;
 use App\Repository\StudentSubmissionRepository;
 use App\Repository\TeacherRepository;
-use App\Shared\Response\Exception\AccessDeniedException;
 use App\Shared\Response\Exception\Student\StudentSubmissionNotFound;
 use App\Shared\Response\Exception\Teacher\TeacherNotFoundException;
+use App\Shared\Response\Exception\User\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 

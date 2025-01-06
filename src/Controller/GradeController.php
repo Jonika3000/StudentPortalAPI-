@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[Route('/api', name: 'api_')]
 class GradeController extends AbstractController
 {
     public function __construct(
@@ -24,7 +25,7 @@ class GradeController extends AbstractController
     }
 
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/api/grade', name: 'app_grade_post', methods: ['POST'])]
+    #[Route('/grade', name: 'grade_post', methods: ['POST'])]
     public function post(GradePostRequest $request, GradePostDecoder $decoder): JsonResponse
     {
         try {
@@ -41,7 +42,7 @@ class GradeController extends AbstractController
     }
 
     #[IsGranted(UserRoles::TEACHER)]
-    #[Route('/api/grade/{id}', name: 'app_grade_delete', methods: ['DELETE'])]
+    #[Route('/grade/{id}', name: 'grade_delete', methods: ['DELETE'])]
     public function remove(Grade $grade): JsonResponse
     {
         try {

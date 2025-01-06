@@ -3,11 +3,11 @@
 namespace App\Utils;
 
 use App\Constants\ErrorCodes;
-use App\Shared\Response\Exception\AccessDeniedException;
-use App\Shared\Response\Exception\IncorrectUserConfigurationException;
 use App\Shared\Response\Exception\Student\StudentNotFoundException;
 use App\Shared\Response\Exception\Student\StudentSubmissionNotFound;
 use App\Shared\Response\Exception\Teacher\TeacherNotFoundException;
+use App\Shared\Response\Exception\User\AccessDeniedException;
+use App\Shared\Response\Exception\User\IncorrectUserConfigurationException;
 use App\Shared\Response\ResponseError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

@@ -14,10 +14,10 @@ use App\Utils\ExceptionHandleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+#[Route('/api', name: 'api_')]
 class UserController extends AbstractController
 {
     public function __construct(
@@ -26,7 +26,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('/api/user/me', name: 'app_user', methods: 'GET')]
+    #[Route('/user/me', name: 'user', methods: 'GET')]
     public function index(): JsonResponse
     {
         $token = $this->tokenStorage->getToken();
@@ -34,7 +34,7 @@ class UserController extends AbstractController
         return $this->json($this->userService->getUserByToken($token));
     }
 
-    #[Route('/api/password-reset-request', name: 'app_password_reset_request', methods: ['POST'])]
+    #[Route('/password-reset-request', name: 'password_reset_request', methods: ['POST'])]
     public function passwordResetRequest(
         PasswordResetRequestRequest $request,
         PasswordResetRequestDecoder $passwordResetDecoder,
@@ -48,7 +48,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/api/password-reset', name: 'app_password_reset', methods: ['POST'])]
+    #[Route('/password-reset', name: 'password_reset', methods: ['POST'])]
     public function passwordReset(
         PasswordResetRequest $request,
         PasswordResetDecoder $passwordResetDecoder,
@@ -61,7 +61,7 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/api/update', name: 'app_user_update', methods: ['PATCH'])]
+    #[Route('/update', name: 'user_update', methods: ['PATCH'])]
     public function userEdit(
         UserEditRequest $request,
         UserEditFileBagDecoder $fileBagDecoder,
